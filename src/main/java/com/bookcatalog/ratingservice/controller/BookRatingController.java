@@ -67,7 +67,7 @@ public class BookRatingController {
 	}
 
 	
-	@DeleteMapping(value = "api/bookcatalog/{userId}/{bookId}/rating", produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(value = "api/bookcatalog/{userId}/{bookId}/rating")
 	public ResponseEntity<String> deleteBookRating(@PathVariable("userId") String userId,@PathVariable("bookId") int bookId) {
 		int deleteID = bookRatingServiceImpl.deleteBookRatingDetails(userId,bookId);
 
