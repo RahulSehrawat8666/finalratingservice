@@ -35,7 +35,7 @@ public class BookRatingServiceImpl {
 		BookUserIdEntity bookUserIdEntity = new BookUserIdEntity();
 		bookUserIdEntity.setBookId(bookId);
 		bookUserIdEntity.setUserId(userId);
-		Optional<BookRatingEntity> bookRatingEntity = bookRatingDAO.findByBookUserId_BookId(bookId);
+		Optional<BookRatingEntity> bookRatingEntity = bookRatingDAO.findByBookUserId_UserIdAndBookUserId_BookId(userId,bookId);
 		BookRating bookRating = new BookRating();
 		Gson gson = new Gson();
 		if (bookRatingEntity.isPresent()) {
@@ -69,25 +69,20 @@ public class BookRatingServiceImpl {
 
 	}*/
 	
-	public int deleteBookRatingDetails(int bookId) {
+	public int deleteBookRatingDetails(String userId,int bookId) {
 		BookUserIdEntity bookUserIdEntity = new BookUserIdEntity();
 		bookUserIdEntity.setBookId(bookId);
-		Optional<BookRatingEntity> bookRatingEntity = bookRatingDAO.findByBookUserId_BookId(bookId);
+		bookUserIdEntity.setUserId(userId);
+		Optional<BookRatingEntity> bookRatingEntity = bookRatingDAO.findByBookUserId_UserIdAndBookUserId_BookId(userId,bookId);
 		if (bookRatingEntity.isPresent()) {
-		bookRatingDAO.deleteByBookUserId_BookId(bookId);
+		bookRatingDAO.deleteByBookUserId_UserIdAndBookUserId_BookId(userId,bookId);
 		return bookId;
 		}
 		  
 		return -1;
 	}   
 
-	/*public int addBookRating(BookRating bookRating) {
-		BookRatingEntity bookRatingEntity = new BookRatingEntity();
-		Gson gson = new Gson();
-		bookRatingEntity = gson.fromJson(gson.toJson(bookRating), BookRatingEntity.class);
-		BookRatingEntity bookrateentity = bookRatingDAO.save(bookRatingEntity);
-		return bookrateentity.getRating();
-	}*/
+	
 	
 	public BookRating addBookRating(BookRating bookRating) {
 		BookRatingEntity bookRatingEntity = new BookRatingEntity();

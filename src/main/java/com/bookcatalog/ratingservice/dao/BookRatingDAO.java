@@ -15,4 +15,8 @@ public interface BookRatingDAO extends JpaRepository<BookRatingEntity, BookUserI
 
 	Optional<BookRatingEntity> deleteByBookUserId_BookId(int bookId);
 
+	Optional<BookRatingEntity> findByBookUserId_UserIdAndBookUserId_BookId(String userId, int bookId);
+
+	void deleteByBookUserId_UserIdAndBookUserId_BookId(String userId, int bookId);
+
 }

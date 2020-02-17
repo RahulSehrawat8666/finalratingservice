@@ -31,7 +31,7 @@ public class BookRatingController {
 	public ResponseEntity<Collection<BookRating>> getBookRatingeDetails() {
 		Collection<BookRating> listBookRating = bookRatingServiceImpl.getBookRatingDetails();
 		if (listBookRating.isEmpty()) {
-			throw new RecordNotFoundException("NO DATA FOUND in DATABASE");
+			throw new RecordNotFoundException("NO RECORDS FOUND IN DATABASE");
 		}
 		return new ResponseEntity<Collection<BookRating>>(listBookRating, HttpStatus.OK);
 	}
@@ -41,40 +41,20 @@ public class BookRatingController {
 			@Valid @PathVariable("bookId") int bookId) {
 		BookRating bookRating = bookRatingServiceImpl.getBookRatingDetailById(userId, bookId);
 		if (bookRating == null) {
-			throw new RecordNotFoundException("Record Not Found for given Book ID");
+			throw new RecordNotFoundException("Record Not Found for given User Id and Book ID");
 		}
 
 		return new ResponseEntity<BookRating>(bookRating, HttpStatus.FOUND);
 	}
 
-	/*
-	 * @GetMapping(value = "api/bookcatalog", produces =
-	 * MediaType.APPLICATION_JSON_VALUE) public
-	 * ResponseEntity<Collection<BookRating>> getBookRatingeDetails() {
-	 * Collection<BookRating> listBookRating =
-	 * bookRatingServiceImpl.getBookRatingDetails(); return new
-	 * ResponseEntity<Collection<BookRating>>(listBookRating, HttpStatus.OK); }
-	 * 
-	 * @GetMapping(value = "api/bookcatalog/{userId}/{bookId}/rating", produces =
-	 * MediaType.APPLICATION_JSON_VALUE) public ResponseEntity<BookRating>
-	 * getBookRatingDetailById(@PathVariable("userId") String
-	 * userId,@PathVariable("bookId") int bookId){ BookRating bookRating =
-	 * bookRatingServiceImpl.getBookRatingDetailById(userId, bookId); return new
-	 * ResponseEntity<BookRating>(bookRating,HttpStatus.OK); }
-	 */
-
-	/*
-	 * @PostMapping(value = "api/bookcatalog/{userId}/{bookId}/rating", consumes =
-	 * MediaType.APPLICATION_JSON_VALUE, produces =
-	 * MediaType.APPLICATION_JSON_VALUE) public ResponseEntity<String>
-	 * addBookRating(@PathVariable("userId") String userId,@PathVariable("bookId")
-	 * int bookId, @RequestBody BookRating bookRating) {
-	 * System.out.println("Hello"); int rating =
-	 * bookRatingServiceImpl.addBookRating(bookRating); System.out.println("[id]:" +
-	 * rating); return new
-	 * ResponseEntity<String>("Book added successfully with rating:" + rating,
-	 * HttpStatus.CREATED); }
-	 */
+	@PutMapping(value = "api/bookcatalog/{userId}/{bookId}/rating", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<BookRating> updateBookRatingeDetails(@RequestBody BookRating bookRating) {
+		BookRating bookRating1 = bookRatingServiceImpl.updateBookRatingDetails(bookRating);
+		if (bookRating1 == null) {
+			throw new ArgumentNotValidException("Parameters provided are not valid");
+		}
+		return new ResponseEntity<BookRating>(bookRating1, HttpStatus.ACCEPTED);
+	}
 
 	@PostMapping(value = "api/bookcatalog/{userId}/{bookId}/rating", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<BookRating> addBookRating(@PathVariable("userId") String userId,
@@ -86,39 +66,13 @@ public class BookRatingController {
 		return new ResponseEntity<BookRating>(bookRating1, HttpStatus.CREATED);
 	}
 
-	/*
-	 * @PutMapping(value= "api/bookcatalog/{userId}/{bookId}/rating" , consumes =
-	 * MediaType.APPLICATION_JSON_VALUE, produces =
-	 * MediaType.APPLICATION_JSON_VALUE) public ResponseEntity<BookRating>
-	 * updateBookRatingeDetails(@PathVariable("userId") String
-	 * userId,@PathVariable("bookId") int bookId, @RequestBody BookRating
-	 * bookRating){ BookRating bookRating1 =
-	 * bookRatingServiceImpl.updateBookRatingDetails(bookRating); return new
-	 * ResponseEntity<BookRating>(bookRating1 , HttpStatus.CREATED); }
-	 */
-
-	@PutMapping(value = "api/bookcatalog/{userId}/{bookId}/rating", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<BookRating> updateBookRatingeDetails(@RequestBody BookRating bookRating) {
-		BookRating bookRating1 = bookRatingServiceImpl.updateBookRatingDetails(bookRating);
-		if (bookRating1 == null) {
-			throw new ArgumentNotValidException("Parameters provided are not valid");
-		}
-		return new ResponseEntity<BookRating>(bookRating1, HttpStatus.ACCEPTED);
-	}
-
-	/*
-	 * @DeleteMapping(value= "api/bookcatalog/{userId}/{bookId}/rating") public
-	 * ResponseEntity<String> deleteBookRating(@PathVariable("bookId") int bookId){
-	 * bookRatingServiceImpl.deleteBookRatingDetails(bookId); return new
-	 * ResponseEntity<String>("Book deleted successfully with bookID:" + bookId,
-	 * HttpStatus.ACCEPTED); }
-	 */
+	
 	@DeleteMapping(value = "api/bookcatalog/{userId}/{bookId}/rating", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> deleteBookRating(@PathVariable("bookId") int bookId) {
-		int deleteID = bookRatingServiceImpl.deleteBookRatingDetails(bookId);
+	public ResponseEntity<String> deleteBookRating(@PathVariable("userId") String userId,@PathVariable("bookId") int bookId) {
+		int deleteID = bookRatingServiceImpl.deleteBookRatingDetails(userId,bookId);
 
 		if (deleteID == -1) {
-			throw new RecordNotFoundException("Record Not Found for Book ID to be deleted");
+			throw new RecordNotFoundException("Record Not Found for User Id and Book ID to be deleted");
 		}
 
 		return new ResponseEntity<String>("Book deleted successfully with bookID: " + bookId, HttpStatus.OK);
